@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Null reference Exception</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="{{url_for('static', filename='scripts.js')}}"></script>
+</head>
+<body onload="init();">
+    <header>
+    </header>
+    <H1>Tempcover hackothon, null pointer exception in car controller!</H1>
+    <p>Try using the folowing http messages</p>
+    <p>Get /status</p>
+    <p>Get /stop?car={yellow|red}</p>
+    <p>Get /start?car={yellow|red}</p>
+    <p>Get speed?car={red|yellow}&speed={40-100}</p>
+    <button onclick="startCar('yellow')">Start Car Yellow</button>
+    <button  onclick="stopCar('yellow')">Stop Car Yellow</button>
+    <br>
+    <button onclick="startCar('red')">Start Car Red</button>
+    <button onclick="stopCar('red')">Stop Car Red</button>
+    <div class="slidecontainer">
+      <label>Yellow speed</label>
+      <input type="range" min="1" max="100" value="50" class="slider" id="yellowSpeed">
+      <label id='yellowSpeedLabel'> </label>
+    </div>
+    <div class="slidecontainer">
+      <label>Red speed</label>
+      <input type="range" min="1" max="100" value="50" class="slider" id="redSpeed">
+      <label id='redSpeedLabel'> </label>
+    </div>
+</body>
+</html>
