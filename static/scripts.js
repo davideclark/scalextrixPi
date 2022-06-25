@@ -56,7 +56,7 @@ function aj(method, url, data, cb){
                 break;
 
                 default:
-                alert(this.status + " status returned by api.");
+                //alert(this.status + " status returned by api.");
                 break;
             }
         }
