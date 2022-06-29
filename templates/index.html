@@ -67,7 +67,7 @@
         <h2 id="EndingTimer"
           class="text-10xl absolute  font-extrabold text-transparent bg-clip-text bg-gradient-to-t from-sf-red-thin to-sf-yellow-thin">
         </h2>
-        <img src="../static/race-image.png" id="RaceImage" class="hidden" width="600" />
+        <img src="../static/race-image.png" id="RaceImage" class="hidden" width="400" />
       </div>
       <!-- Voting wrapper -->
       <div id="VotingWrapper" class="flex items-center justify-around mt-8 ease-out">
@@ -86,6 +86,10 @@
           <h2 class="text-3xl text-center" id="RedCarTitle"></h2>
           <h2 class="text-3xl text-center" id="RedCarScore"></h2>
         </div>
+        <img src="../static/hedgehog.png" id="HedgehogImage" class="hidden absolute bottom transition-all duration-200 transparent opacity-0" width="400" />
+      </div>
+      <div id="WinnerWrapper" >
+        <h2 id="WinnerText" class="text-8xl text-center"></h2>
       </div>
     </div>
   </div>
@@ -304,7 +308,7 @@
 
     function setCountdown() {
       // Set the date we're counting down to
-      var timer = 5 * 3
+      var timer = 10
 
       var minutes;
       var seconds;
@@ -328,9 +332,9 @@
         }
         if (timer <= 5 && timer > 0) {
           // SHOW BIG TEXT?
+          startLed('yellow')
           document.getElementById("CountdownTimer").style.display = "none";
           document.getElementById("VotingWrapper").style.opacity = 0.3;
-
           document.getElementById("EndingTimer").textContent = seconds;
         }
         // If the count down is finished, write some text
@@ -343,13 +347,24 @@
 
     }
 
+    function hedgehogLogic () {
+      var hedgehogImage =  document.getElementById("HedgehogImage");
+      hedgehogImage.style.opacity = 1;
+
+      // hedgehogImage.classList.add('transition-opacity ease-in duration-200');
+
+    }
+
     function startRace() {
-      var timer = 60;
+      var timer = 10;
+      startLed('green');
       var maxValue = selectedGame.redMaxScore > selectedGame.yellowMaxScore ? selectedGame.redMaxScore : selectedGame.yellowMaxScore;
       // scale 35-100
 
       document.getElementById("EndingTimer").style.display = "none";
       document.getElementById("RaceImage").style.display = "block";
+
+      hedgehogLogic();
       document.getElementById("VotingWrapper").style.opacity = 1.0;
       document.getElementById("VotingText").style.display = "none";
 
@@ -374,9 +389,9 @@
           document.getElementById('RedCarScore').innerText = redScore;
           document.getElementById('YellowCarScore').innerText = yellowScore;
 
-          var scaledRedSpeed = Math.min(Math.floor(redScore / maxValue * 65 ) + 35, 85);
-          var scaledYellowSpeed = Math.min(Math.floor(yellowScore / maxValue * 65) + 35, 85);
-          startCarsAndSetSpeed(scaledRedSpeed, scaledYellowSpeed);
+          var scaledRedSpeed = redScore > 0 ? Math.min(Math.floor(redScore / maxValue * 65 ) + 35, 85) : redScore;
+          var scaledYellowSpeed = yellowScore > 0 ? Math.min(Math.floor(yellowScore / maxValue * 65) + 35, 85) : yellowScore;
+          // startCarsAndSetSpeed(scaledRedSpeed, scaledYellowSpeed);
           index++;
         }
         if(timer <= 0 ) {
@@ -385,9 +400,23 @@
       }, 250);
 
       setTimeout(() => {
-        stopCars();
+        finishRace();
+ 
       }, timer*1000)
 
+    }
+
+    function finishRace(){
+      setLed('red');
+      // stopCars();
+      // Show winner
+      if(selectedGame.redMaxScore > selectedGame.yellowMaxScore) {
+         // show red winner
+        document.getElementById('WinnerText').innerText = 'The winner is: ' + selectedGame.redTitle
+      } else {
+        // show yellow winner
+        document.getElementById('WinnerText').innerText = 'The winner is: ' + selectedGame.yellowTitle
+      }
     }
 
   </script>

@@ -32,6 +32,9 @@ function startCarsAndSetSpeed(redSpeed, yellowSpeed) {
     aj('get', `http://localhost:5000/speed?car=red&speed=${redSpeed}`, '', null)
 }
 
+function startLed(colour) {
+    aj('get', `http://localhost:5000/ledrgb?colour=${colour}`, '', null)
+}
 
 function startCar(car){
     aj('get', 'http://localhost:5000/start?car=' + car, '', null)
