@@ -263,7 +263,7 @@
       var seconds;
 
       // Update the count down every 1 second
-      setInterval(function () {
+     var x = setInterval(function () {
         --timer;
         minutes = parseInt(timer / 60, 10)
         seconds = parseInt(timer % 60, 10);
@@ -286,14 +286,19 @@
         }
         // If the count down is finished, write some text
         if (timer <= 0) {
+          clearInterval(x);
            document.getElementById("EndingTimer").style.display = "none";
            document.getElementById("RaceImage").style.display = "block";
            document.getElementById("VotingWrapper").style.display = "none";
            document.getElementById("VotingText").style.display = "none";
-
-           startCarsAndSetSpeed(50)
+             startCarsAndSetSpeed(50);
+           setTimeout(() => {
+            stopCars();
+           }, 5000)
         }
       }, 1000);
+
+    
     }
 
   </script>

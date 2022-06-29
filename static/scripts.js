@@ -41,6 +41,11 @@ function stopCar(car){
     aj('get', 'http://localhost:5000/stop?car=' + car, '', null)
     }
 
+function stopCars(){
+    aj('get', 'http://localhost:5000/stop?car=red', '', null)
+    aj('get', 'http://localhost:5000/stop?car=yellow', '', null)
+}
+
 function aj(method, url, data, cb){
 
     var xhr = new XMLHttpRequest();
