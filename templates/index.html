@@ -339,7 +339,7 @@ function reRenderChart(){
 
     function setCountdown() {
       // Set the date we're counting down to
-      var timer = 7
+      var timer = 60
       yellowScore = 0;
       redScore = 0;
       document.getElementById('RedCarScore').innerText =  'Sales: ' + redScore;
@@ -366,7 +366,7 @@ function reRenderChart(){
         }
         if (timer <= 5 && timer > 0) {
           // SHOW BIG TEXT?
-          // startLed('yellow')
+          startLed('yellow')
           document.getElementById("CountdownTimer").style.display = "none";
           document.getElementById("VotingWrapper").style.opacity = 0.3;
           document.getElementById("EndingTimer").textContent = seconds;
@@ -393,7 +393,7 @@ function reRenderChart(){
       var timer = 60;
 
       formulaOneAudio.play();
-      // startLed('green');
+      startLed('green');
       var maxValue = selectedGame.redMaxScore > selectedGame.yellowMaxScore ? selectedGame.redMaxScore : selectedGame.yellowMaxScore;
       // scale 35-100
 
@@ -443,7 +443,7 @@ function reRenderChart(){
     }
 
     function finishRace() {
-      // startLed('red');
+      startLed('red');
       formulaOneAudio.pause();
       formulaOneAudio.currentTime = 0;
       stopCars();
