@@ -28,8 +28,8 @@ function init (){
 }
 
 function startCarsAndSetSpeed(redSpeed, yellowSpeed) {
-    aj('get', `http://localhost:5000/speed?car=yellow&speed=${speed}`, '', null)
-    aj('get', `http://localhost:5000/speed?car=red&speed=${speed}`, '', null)
+    aj('get', `http://localhost:5000/speed?car=yellow&speed=${yellowSpeed}`, '', null)
+    aj('get', `http://localhost:5000/speed?car=red&speed=${redSpeed}`, '', null)
 }
 
 
