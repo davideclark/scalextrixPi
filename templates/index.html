@@ -73,8 +73,9 @@
       <div id="VotingWrapper" class="flex items-center justify-around mt-8 ease-out">
         <!-- Vote left -->
         <div id="YellowCarWrapper">
-          <img src="../static/yellow-car.png" />
+          <img onclick="voteCar('yellow')" class="hover:cursor-pointer" src="../static/yellow-car.png" />
           <h2 class="text-3xl text-center" id="YellowCarTitle"></h2>
+          <p id="yellowCarVotes" class="text-center text-2xl">Votes: 0</p>
           <h2 class="text-3xl text-center" id="YellowCarScore"></h2>
         </div>
         <div>
@@ -82,13 +83,15 @@
         </div>
         <!-- Vote right -->
         <div id="RedCarWrapper">
-          <img src="../static/red-car.png" />
+          <img onclick="voteCar('red')"  class="hover:cursor-pointer"  src="../static/red-car.png" />
           <h2 class="text-3xl text-center" id="RedCarTitle"></h2>
+          <p id="redCarVotes" class="text-center text-2xl">Votes: 0</p>
           <h2 class="text-3xl text-center" id="RedCarScore"></h2>
         </div>
-        <img src="../static/hedgehog.png" id="HedgehogImage" class="hidden absolute bottom transition-all duration-200 transparent opacity-0" width="400" />
+        <img src="../static/hedgehog.png" id="HedgehogImage"
+          class="hidden absolute bottom transition-all duration-200 transparent opacity-0" width="400" />
       </div>
-      <div id="WinnerWrapper" >
+      <div id="WinnerWrapper">
         <h2 id="WinnerText" class="text-8xl text-center"></h2>
       </div>
     </div>
@@ -102,19 +105,22 @@
         redTitle: 'Haven',
         yellowTitle: 'Watford',
         redMaxScore: 304,
-        yellowMaxScore: 305
+        yellowMaxScore: 305,
+        key: 1
       },
       2: {
         redTitle: 'Private Car',
         yellowTitle: 'Commercial Vehicle',
         redMaxScore: 1334,
-        yellowMaxScore: 550
+        yellowMaxScore: 550,
+        key: 2
       },
       3: {
         redTitle: 'Cazoo',
         yellowTitle: 'Quidco',
         redMaxScore: 209,
-        yellowMaxScore: 1
+        yellowMaxScore: 1,
+        key: 3
       }
     }
 
@@ -140,6 +146,7 @@
     ];
 
 
+function reRenderChart(){
     var svg = d3.select('#chart')
       .append("svg")
       .data([data])
@@ -182,8 +189,9 @@
         return data[i].label;
       });
 
+      
     container.on("click", spin);
-
+    
 
     function spin(d) {
       // clear question
@@ -227,18 +235,21 @@
           d3.select("#Category")
             .text(`The category picked is: ${data[picked].question}`);
 
-         document.getElementById('RedCarTitle').innerText = selectedGame.redTitle;
-         document.getElementById('YellowCarTitle').innerText = selectedGame.yellowTitle;
-         
+          document.getElementById('RedCarTitle').innerText = selectedGame.redTitle;
+          document.getElementById('YellowCarTitle').innerText = selectedGame.yellowTitle;
+
           oldrotation = rotation;
           container.on("click", spin);
           handleSpinResult();
         });
 
-    }
+      }
+
+
 
     function handleSpinResult() {
       setCountdown();
+
       var chartWrapper = document.getElementById('ChartWrapper');
       chartWrapper.style.display = 'none';
       var mainWrapper = document.getElementById('MainWrapper');
@@ -268,6 +279,22 @@
       .style({ "font-weight": "bold", "font-size": "30px" });
 
 
+
+  }
+  
+  reRenderChart();
+
+
+  var votes = {
+    red: 0,
+    yellow: 0
+  };
+
+  function voteCar(colour) {
+    votes[colour] += 1;
+    document.getElementById(`${colour}CarVotes`).innerText = 'Votes: ' + votes[colour];
+  }
+
     function rotTween(to) {
       var i = d3.interpolate(oldrotation % 360, rotation);
       return function (t) {
@@ -293,8 +320,11 @@
       return array;
     }
 
+
     var redScore = 0;
     var yellowScore = 0;
+
+   
 
     function generateArray(total) {
       var x = new Array(240).fill(0)
@@ -308,11 +338,14 @@
 
     function setCountdown() {
       // Set the date we're counting down to
-      var timer = 20
-
+      var timer = 60
+      yellowScore = 0;
+      redScore = 0;
+      document.getElementById('RedCarScore').innerText = redScore;
+          document.getElementById('YellowCarScore').innerText = yellowScore;
+      document.getElementById('VotingWrapper').style.display = 'flex'
       var minutes;
       var seconds;
-
 
 
       // Update the count down every 1 second
@@ -347,8 +380,8 @@
 
     }
 
-    function hedgehogLogic () {
-      var hedgehogImage =  document.getElementById("HedgehogImage");
+    function hedgehogLogic() {
+      var hedgehogImage = document.getElementById("HedgehogImage");
       hedgehogImage.style.opacity = 1;
 
       // hedgehogImage.classList.add('transition-opacity ease-in duration-200');
@@ -357,6 +390,7 @@
 
     function startRace() {
       var timer = 60;
+
       startLed('green');
       var maxValue = selectedGame.redMaxScore > selectedGame.yellowMaxScore ? selectedGame.redMaxScore : selectedGame.yellowMaxScore;
       // scale 35-100
@@ -373,50 +407,75 @@
       var index = 0;
       var timerInterval = setInterval(() => {
         --timer;
-        if(timer === 0 ) {
+        if (timer === 0) {
           clearInterval(timerInterval);
         }
       }, 1000)
-      var interval  = setInterval(function () {
-     
+      var interval = setInterval(function () {
+
         minutes = parseInt(timer / 60, 10)
         seconds = parseInt(timer % 60, 10);
         if (timer > 0) {
           redScore += redArray[index];
-          
+
           yellowScore += yellowArray[index];
-          
+
           document.getElementById('RedCarScore').innerText = redScore;
           document.getElementById('YellowCarScore').innerText = yellowScore;
 
-          var scaledRedSpeed = redScore > 0 ? Math.min(Math.floor(redScore / maxValue * 65 ) + 35, 85) : redScore;
+          var scaledRedSpeed = redScore > 0 ? Math.min(Math.floor(redScore / maxValue * 65) + 35, 85) : redScore;
           var scaledYellowSpeed = yellowScore > 0 ? Math.min(Math.floor(yellowScore / maxValue * 65) + 35, 85) : yellowScore;
           startCarsAndSetSpeed(scaledRedSpeed, scaledYellowSpeed);
           index++;
         }
-        if(timer <= 0 ) {
+        if (timer <= 0) {
           clearInterval(interval);
         }
       }, 250);
 
       setTimeout(() => {
         finishRace();
- 
-      }, timer*1000)
+
+      }, timer * 1000)
 
     }
 
-    function finishRace(){
+    function finishRace() {
       startLed('red');
       stopCars();
       // Show winner
-      if(selectedGame.redMaxScore > selectedGame.yellowMaxScore) {
-         // show red winner
+      if (selectedGame.redMaxScore > selectedGame.yellowMaxScore) {
+        // show red winner
         document.getElementById('WinnerText').innerText = 'The winner is: ' + selectedGame.redTitle
       } else {
         // show yellow winner
         document.getElementById('WinnerText').innerText = 'The winner is: ' + selectedGame.yellowTitle
       }
+
+      setTimeout(() => {
+        document.getElementById('WinnerText').style.display = 'none';
+        document.getElementById("EndingTimer").style.display = "block";
+        document.getElementById("EndingTimer").innerText = "";
+        document.getElementById("CountdownTimer").style.display = "block";
+        document.getElementById("CountdownTimer").innerText = "";
+document.getElementById('RaceImage').style.display = 'none';
+document.getElementById('VotingWrapper').style.display = 'none'
+        data = data.filter(d => d.value != selectedGame.key);
+        var chart = document.getElementById('chart')
+        var chartWrapper = document.getElementById('ChartWrapper')
+        chart.innerHTML = ''
+        chartWrapper.style.display = 'flex';
+        votes = {
+    red: 0,
+    yellow: 0
+  };
+
+  document.getElementById(`redCarVotes`).innerText = 'Votes: 0';
+  document.getElementById(`yellowCarVotes`).innerText = 'Votes: 0 ';
+  
+  
+        reRenderChart();
+      }, 1000)
     }
 
   </script>

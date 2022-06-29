@@ -25,6 +25,7 @@ function init (){
     // }
     
     startLed('red');
+    
 }
 
 function startCarsAndSetSpeed(redSpeed, yellowSpeed) {
