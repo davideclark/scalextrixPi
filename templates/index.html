@@ -52,7 +52,7 @@
     <!-- Question selected -->
     <h1
       class="text-center text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-t from-sf-red-thin to-sf-yellow-thin"
-      id="category"></h1>
+      id="Category"></h1>
     <!-- Roulette Wheel for question -->
     <div id="ChartWrapper" class="flex justify-center w-full">
       <div id="chart"></div>
@@ -153,7 +153,7 @@
 
     function spin(d) {
       // clear question
-      d3.select("#question")
+      d3.select("#Category")
         .text('');
       container.on("click", null);
 
@@ -190,7 +190,7 @@
         .each("end", function () {
 
           //populate question
-          d3.select("#question")
+          d3.select("#Category")
             .text(`The category picked is: ${data[picked].question}`);
 
           oldrotation = rotation;
