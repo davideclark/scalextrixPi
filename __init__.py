@@ -64,6 +64,10 @@ def create_app(test_config=None):
     def hello():
         return render_template('index.html')
         
+    @app.route('/test')
+    def test():
+        return render_template('test.html')    
+        
     @app.route('/stop')
     def stop():
         car = request.args.get('car') # red or yellow
