@@ -145,6 +145,7 @@
       { "label": "Affiliates", "value": 3, "question": "Affiliates" }, //font-family
     ];
 
+    var formulaOneAudio = new Audio('../static/formula-one.mp3');
 
 function reRenderChart(){
     var svg = d3.select('#chart')
@@ -338,7 +339,7 @@ function reRenderChart(){
 
     function setCountdown() {
       // Set the date we're counting down to
-      var timer = 60
+      var timer = 7
       yellowScore = 0;
       redScore = 0;
       document.getElementById('RedCarScore').innerText =  'Sales: ' + redScore;
@@ -365,7 +366,7 @@ function reRenderChart(){
         }
         if (timer <= 5 && timer > 0) {
           // SHOW BIG TEXT?
-          startLed('yellow')
+          // startLed('yellow')
           document.getElementById("CountdownTimer").style.display = "none";
           document.getElementById("VotingWrapper").style.opacity = 0.3;
           document.getElementById("EndingTimer").textContent = seconds;
@@ -391,7 +392,8 @@ function reRenderChart(){
     function startRace() {
       var timer = 60;
 
-      startLed('green');
+      formulaOneAudio.play();
+      // startLed('green');
       var maxValue = selectedGame.redMaxScore > selectedGame.yellowMaxScore ? selectedGame.redMaxScore : selectedGame.yellowMaxScore;
       // scale 35-100
 
@@ -441,7 +443,9 @@ function reRenderChart(){
     }
 
     function finishRace() {
-      startLed('red');
+      // startLed('red');
+      formulaOneAudio.pause();
+      formulaOneAudio.currentTime = 0;
       stopCars();
       // Show winner
       if (selectedGame.redMaxScore > selectedGame.yellowMaxScore) {
