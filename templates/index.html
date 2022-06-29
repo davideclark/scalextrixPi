@@ -447,15 +447,16 @@ function reRenderChart(){
       formulaOneAudio.pause();
       formulaOneAudio.currentTime = 0;
       stopCars();
+   
       // Show winner
-      if (selectedGame.redMaxScore > selectedGame.yellowMaxScore) {
+      if (redScore > yellowScore) {
         // show red winner
         document.getElementById('WinnerText').innerText = 'The winner is: ' + selectedGame.redTitle
       } else {
         // show yellow winner
         document.getElementById('WinnerText').innerText = 'The winner is: ' + selectedGame.yellowTitle
       }
-
+      document.getElementById('WinnerText').style.display = 'block';
       setTimeout(() => {
         document.getElementById('WinnerText').style.display = 'none';
         document.getElementById("EndingTimer").style.display = "block";
