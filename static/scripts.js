@@ -1,28 +1,28 @@
 
 function init (){
 
-    // Setup red Slider
-    var redSlider = document.getElementById('redSpeed');
-    var redOutput = document.getElementById('redSpeedLabel');
-    redOutput.innerHTML = redSlider.value; // Display the default slider value
+    // // Setup red Slider
+    // var redSlider = document.getElementById('redSpeed');
+    // var redOutput = document.getElementById('redSpeedLabel');
+    // redOutput.innerHTML = redSlider.value; // Display the default slider value
 
-    // Update the current slider value (each time you drag the slider handle)
-    redSlider.oninput = function() {
-      redOutput.innerHTML = this.value;
-      //speed?car={red|yellow}&speed={40-100}
-      aj('get', 'http://localhost:5000/speed?car=red&speed=' + this.value, '', null)
-    }
+    // // Update the current slider value (each time you drag the slider handle)
+    // redSlider.oninput = function() {
+    //   redOutput.innerHTML = this.value;
+    //   //speed?car={red|yellow}&speed={40-100}
+    //   aj('get', 'http://localhost:5000/speed?car=red&speed=' + this.value, '', null)
+    // }
     
-    // Setup Yellow slider
-    var yellowSlider = document.getElementById('yellowSpeed');
-    var yellowOutput = document.getElementById('yellowSpeedLabel');
-    yellowOutput.innerHTML = yellowSpeed.value; // Display the default slider value
+    // // Setup Yellow slider
+    // var yellowSlider = document.getElementById('yellowSpeed');
+    // var yellowOutput = document.getElementById('yellowSpeedLabel');
+    // yellowOutput.innerHTML = yellowSpeed.value; // Display the default slider value
 
-    // Update the current slider value (each time you drag the slider handle)
-    yellowSpeed.oninput = function() {
-      yellowOutput.innerHTML = this.value;
-      aj('get', 'http://localhost:5000/speed?car=yellow&speed=' + this.value, '', null)
-    }
+    // // Update the current slider value (each time you drag the slider handle)
+    // yellowSpeed.oninput = function() {
+    //   yellowOutput.innerHTML = this.value;
+    //   aj('get', 'http://localhost:5000/speed?car=yellow&speed=' + this.value, '', null)
+    // }
     
     startLed('red');
 }
