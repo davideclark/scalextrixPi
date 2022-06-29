@@ -24,7 +24,7 @@ function init (){
       aj('get', 'http://localhost:5000/speed?car=yellow&speed=' + this.value, '', null)
     }
     
-    
+    startLed('red');
 }
 
 function startCarsAndSetSpeed(redSpeed, yellowSpeed) {
