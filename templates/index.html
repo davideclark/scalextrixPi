@@ -30,6 +30,9 @@
               }
             }
           },
+          fontSize: {
+            '10xl': ['50vh']
+          }
         }
       }
     }
@@ -49,27 +52,33 @@
     <!-- Question selected -->
     <h1
       class="text-center text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-t from-sf-red-thin to-sf-yellow-thin"
-      id="question"></h1>
+      id="category"></h1>
     <!-- Roulette Wheel for question -->
     <div id="ChartWrapper" class="flex justify-center w-full">
       <div id="chart"></div>
     </div>
+
     <!-- Countdown and voting wrapper -->
     <div id="MainWrapper" class="items-center hidden mt-4">
       <!-- Countdown? -->
-      <div class="text-center">
-        <h3>Get your vote in! You only have: </h3>
-        <h2  class="font-extrabold text-8xl" id="CountdownTimer"></h2>
+      <div class="text-center flex items-center flex-col">
+        <h3 id="VotingText">Vote for your winner </h3>
+        <h2 class="font-extrabold text-9xl" id="CountdownTimer"></h2>
+        <h2 id="EndingTimer" class="text-10xl absolute  font-extrabold text-transparent bg-clip-text bg-gradient-to-t from-sf-red-thin to-sf-yellow-thin"></h2>
+        <img src="../static/race-image.png" id="RaceImage" class="hidden" width="600" />
       </div>
       <!-- Voting wrapper -->
-      <div class="flex items-center justify-around mt-8">
+      <div id="VotingWrapper" class="flex items-center justify-around mt-8 ease-out">
         <!-- Vote left -->
+        <div id="YellowCarWrapper">
+          <img src="../static/yellow-car.png" />
+        </div>
         <div>
-          <button class="bg-sf-red-main text-4xl p-20 rounded hover:cursor-pointer hover:bg-sf-red-thin">First</button>
+          <img src='../static/vs.png'>
         </div>
         <!-- Vote right -->
-        <div>
-          <button class="bg-sf-yellow-main text-4xl p-20 rounded hover:cursor-pointer hover:bg-sf-yellow-thin">Mulsanne</button>
+        <div id="RedCarWrapper">
+          <img src="../static/red-car.png" />
         </div>
       </div>
     </div>
@@ -249,33 +258,40 @@
 
     function setCountdown() {
       // Set the date we're counting down to
-      var dateNow = new Date();
-      var dateToCountdown = new Date(dateNow.setHours(dateNow.getHours() + 1));
-      console.log("🚀 ~ file: index.html ~ line 245 ~ setCountdown ~ dateToCountdown", dateToCountdown)
-      var countDownDate = dateToCountdown.getTime();
+      var timer = 5 * 3
+      var minutes;
+      var seconds;
 
       // Update the count down every 1 second
-      var x = setInterval(function () {
+      setInterval(function () {
+        --timer;
+        minutes = parseInt(timer / 60, 10)
+        seconds = parseInt(timer % 60, 10);
 
-        // Get today's date and time
-        var now = new Date().getTime();
+        if(minutes >= 1) {
+          seconds = seconds < 10 ? "0" + seconds : seconds;
+        }
+        document.getElementById("CountdownTimer").textContent = minutes + ":" + seconds; 
 
-        // Find the distance between now and the count down date
-        var distance = countDownDate - now;
+        // TODO: LOGIC:
+     
+        // At 0 show GO
+        if(minutes == 0) {
+          document.getElementById("CountdownTimer").textContent = seconds;
+        }
+        if(timer <= 5 && timer > 0) {
+          // SHOW BIG TEXT?
+          document.getElementById("CountdownTimer").style.display = "none";
+          document.getElementById("VotingWrapper").style.opacity = 0.3;
 
-        // Time calculations for days, hours, minutes and seconds
-        var days = Math.floor(distance / (1000 * 60 * 60 * 24));
-        var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-        var seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-        // Display the result in the element with id="demo"
-        document.getElementById("CountdownTimer").innerHTML = minutes + "m " + seconds + "s ";
-
+          document.getElementById("EndingTimer").textContent = seconds;
+        }
         // If the count down is finished, write some text
-        if (distance < 0) {
-          clearInterval(x);
-          document.getElementById("demo").innerHTML = "EXPIRED";
+        if (timer <= 0) {
+           document.getElementById("EndingTimer").style.display = "none";
+           document.getElementById("RaceImage").style.display = "block";
+           document.getElementById("VotingWrapper").style.display = "none";
+           document.getElementById("VotingText").style.display = "none";
         }
       }, 1000);
     }
