@@ -341,8 +341,8 @@ function reRenderChart(){
       var timer = 60
       yellowScore = 0;
       redScore = 0;
-      document.getElementById('RedCarScore').innerText = redScore;
-          document.getElementById('YellowCarScore').innerText = yellowScore;
+      document.getElementById('RedCarScore').innerText =  'Sales: ' + redScore;
+          document.getElementById('YellowCarScore').innerText = 'Sales: ' + yellowScore;
       document.getElementById('VotingWrapper').style.display = 'flex'
       var minutes;
       var seconds;
@@ -420,8 +420,8 @@ function reRenderChart(){
 
           yellowScore += yellowArray[index];
 
-          document.getElementById('RedCarScore').innerText = redScore;
-          document.getElementById('YellowCarScore').innerText = yellowScore;
+          document.getElementById('RedCarScore').innerText = 'Sales: '  + redScore;
+          document.getElementById('YellowCarScore').innerText = 'Sales: '  + yellowScore; 
 
           var scaledRedSpeed = redScore > 0 ? Math.min(Math.floor(redScore / maxValue * 65) + 35, 85) : redScore;
           var scaledYellowSpeed = yellowScore > 0 ? Math.min(Math.floor(yellowScore / maxValue * 65) + 35, 85) : yellowScore;
@@ -475,7 +475,7 @@ document.getElementById('VotingWrapper').style.display = 'none'
   
   
         reRenderChart();
-      }, 1000)
+      }, 5000)
     }
 
   </script>
