@@ -272,8 +272,6 @@
           seconds = seconds < 10 ? "0" + seconds : seconds;
         }
         document.getElementById("CountdownTimer").textContent = minutes + ":" + seconds; 
-
-        // TODO: LOGIC:
      
         // At 0 show GO
         if(minutes == 0) {
@@ -292,6 +290,8 @@
            document.getElementById("RaceImage").style.display = "block";
            document.getElementById("VotingWrapper").style.display = "none";
            document.getElementById("VotingText").style.display = "none";
+
+           startCarsAndSetSpeed(50)
         }
       }, 1000);
     }
