@@ -64,7 +64,9 @@
       <div class="text-center flex items-center flex-col">
         <h3 id="VotingText">Vote for your winner </h3>
         <h2 class="font-extrabold text-9xl" id="CountdownTimer"></h2>
-        <h2 id="EndingTimer" class="text-10xl absolute  font-extrabold text-transparent bg-clip-text bg-gradient-to-t from-sf-red-thin to-sf-yellow-thin"></h2>
+        <h2 id="EndingTimer"
+          class="text-10xl absolute  font-extrabold text-transparent bg-clip-text bg-gradient-to-t from-sf-red-thin to-sf-yellow-thin">
+        </h2>
         <img src="../static/race-image.png" id="RaceImage" class="hidden" width="600" />
       </div>
       <!-- Voting wrapper -->
@@ -72,6 +74,8 @@
         <!-- Vote left -->
         <div id="YellowCarWrapper">
           <img src="../static/yellow-car.png" />
+          <h2 class="text-3xl text-center" id="YellowCarTitle"></h2>
+          <h2 class="text-3xl text-center" id="YellowCarScore"></h2>
         </div>
         <div>
           <img src='../static/vs.png'>
@@ -79,6 +83,8 @@
         <!-- Vote right -->
         <div id="RedCarWrapper">
           <img src="../static/red-car.png" />
+          <h2 class="text-3xl text-center" id="RedCarTitle"></h2>
+          <h2 class="text-3xl text-center" id="RedCarScore"></h2>
         </div>
       </div>
     </div>
@@ -86,6 +92,30 @@
   </div>
   <script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
   <script type="text/javascript" charset="utf-8">
+
+    var gameData = {
+      1: {
+        redTitle: 'Haven',
+        yellowTitle: 'Watford',
+        redMaxScore: 304,
+        yellowMaxScore: 305
+      },
+      2: {
+        redTitle: 'Private Car',
+        yellowTitle: 'Commercial Vehicle',
+        redMaxScore: 1334,
+        yellowMaxScore: 550
+      },
+      3: {
+        redTitle: 'Cazoo',
+        yellowTitle: 'Quidco',
+        redMaxScore: 209,
+        yellowMaxScore: 1
+      }
+    }
+
+    var selectedGame = {};
+
     var padding = { top: 20, right: 40, bottom: 0, left: 0 },
       w = 500 - padding.left - padding.right,
       h = 500 - padding.top - padding.bottom,
@@ -101,8 +131,8 @@
 
     var data = [
       { "label": "Underwriter", "value": 1, "question": "Underwriter" }, // padding
-      { "label": "Judges", "value": 1, "question": "Judges" }, //font-family
-      { "label": "Scheme", "value": 1, "question": "Scheme" }, //font-family
+      { "label": "Scheme", "value": 2, "question": "Scheme" }, //font-family
+      { "label": "Affiliates", "value": 3, "question": "Affiliates" }, //font-family
     ];
 
 
@@ -188,11 +218,14 @@
         .duration(3000)
         .attrTween("transform", rotTween)
         .each("end", function () {
-
+          selectedGame = gameData[data[picked].value]
           //populate question
           d3.select("#Category")
             .text(`The category picked is: ${data[picked].question}`);
 
+         document.getElementById('RedCarTitle').innerText = selectedGame.redTitle;
+         document.getElementById('YellowCarTitle').innerText = selectedGame.yellowTitle;
+         
           oldrotation = rotation;
           container.on("click", spin);
           handleSpinResult();
@@ -201,13 +234,13 @@
     }
 
     function handleSpinResult() {
-        setCountdown();
-        var chartWrapper = document.getElementById('ChartWrapper');
-        chartWrapper.style.display = 'none';
-        var mainWrapper = document.getElementById('MainWrapper');
-        mainWrapper.style.display = 'block';
+      setCountdown();
+      var chartWrapper = document.getElementById('ChartWrapper');
+      chartWrapper.style.display = 'none';
+      var mainWrapper = document.getElementById('MainWrapper');
+      mainWrapper.style.display = 'block';
     }
-    
+
     //make arrow
     svg.append("g")
       .attr("transform", "translate(" + (w + padding.left + padding.right) + "," + ((h / 2) + padding.top) + ")")
@@ -256,28 +289,44 @@
       return array;
     }
 
+    var redScore = 0;
+    var yellowScore = 0;
+
+    function generateArray(total) {
+      var x = new Array(240).fill(0)
+
+      for (var i = 0; i < total; i++) {
+        var index = Math.floor(Math.random() * 241)
+        x[index] = x[index] + 1;
+      }
+      return x;
+    }
+
     function setCountdown() {
       // Set the date we're counting down to
       var timer = 5 * 3
+
       var minutes;
       var seconds;
 
+
+
       // Update the count down every 1 second
-     var x = setInterval(function () {
+      var x = setInterval(function () {
         --timer;
         minutes = parseInt(timer / 60, 10)
         seconds = parseInt(timer % 60, 10);
 
-        if(minutes >= 1) {
+        if (minutes >= 1) {
           seconds = seconds < 10 ? "0" + seconds : seconds;
         }
-        document.getElementById("CountdownTimer").textContent = minutes + ":" + seconds; 
-     
+        document.getElementById("CountdownTimer").textContent = minutes + ":" + seconds;
+
         // At 0 show GO
-        if(minutes == 0) {
+        if (minutes == 0) {
           document.getElementById("CountdownTimer").textContent = seconds;
         }
-        if(timer <= 5 && timer > 0) {
+        if (timer <= 5 && timer > 0) {
           // SHOW BIG TEXT?
           document.getElementById("CountdownTimer").style.display = "none";
           document.getElementById("VotingWrapper").style.opacity = 0.3;
@@ -287,18 +336,58 @@
         // If the count down is finished, write some text
         if (timer <= 0) {
           clearInterval(x);
-           document.getElementById("EndingTimer").style.display = "none";
-           document.getElementById("RaceImage").style.display = "block";
-           document.getElementById("VotingWrapper").style.display = "none";
-           document.getElementById("VotingText").style.display = "none";
-             startCarsAndSetSpeed(50);
-           setTimeout(() => {
-            stopCars();
-           }, 5000)
+          startRace();
         }
       }, 1000);
 
-    
+
+    }
+
+    function startRace() {
+      var timer = 10;
+      var maxValue = selectedGame.redMaxScore > selectedGame.yellowMaxScore ? selectedGame.redMaxScore : selectedGame.yellowMaxScore;
+      // scale 35-100
+
+      document.getElementById("EndingTimer").style.display = "none";
+      document.getElementById("RaceImage").style.display = "block";
+      document.getElementById("VotingWrapper").style.opacity = 1.0;
+      document.getElementById("VotingText").style.display = "none";
+      // startCarsAndSetSpeed(50, 70);
+      var redArray = generateArray(selectedGame.redMaxScore);
+      var yellowArray = generateArray(selectedGame.yellowMaxScore);
+      var index = 0;
+      var timerInterval = setInterval(() => {
+        --timer;
+        if(timer === 0 ) {
+          clearInterval(timerInterval);
+        }
+      }, 1000)
+      var interval  = setInterval(function () {
+     
+        minutes = parseInt(timer / 60, 10)
+        seconds = parseInt(timer % 60, 10);
+        if (timer > 0) {
+          redScore += redArray[index];
+          
+          yellowScore += yellowArray[index];
+          
+          document.getElementById('RedCarScore').innerText = redScore;
+          document.getElementById('YellowCarScore').innerText = yellowScore;
+
+          var scaledRedSpeed = Math.min(Math.floor(redScore / maxValue * 65 ) + 35, 85);
+          var scaledYellowSpeed = Math.min(Math.floor(yellowScore / maxValue * 65) + 35, 85);
+          startCarsAndSetSpeed(scaledRedSpeed, scaledYellowSpeed);
+          index++;
+        }
+        if(timer <= 0 ) {
+          clearInterval(interval);
+        }
+      }, 250);
+
+      setTimeout(() => {
+        stopCars();
+      }, timer*1000)
+
     }
 
   </script>
