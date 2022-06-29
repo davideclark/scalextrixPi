@@ -33,7 +33,7 @@ function startCarsAndSetSpeed(redSpeed, yellowSpeed) {
 }
 
 function startLed(colour) {
-    aj('get', `http://localhost:5000/ledrgb?colour=${colour}`, '', null)
+    aj('get', `http://localhost:5000/ledrbg?colour=${colour}`, '', null)
 }
 
 function startCar(car){
