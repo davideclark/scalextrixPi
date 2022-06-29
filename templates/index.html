@@ -146,6 +146,7 @@
     ];
 
     var formulaOneAudio = new Audio('../static/formula-one.mp3');
+    var bennyHillAudio = new Audio('../static/benny-hill.mp3');
 
 function reRenderChart(){
     var svg = d3.select('#chart')
@@ -391,8 +392,11 @@ function reRenderChart(){
 
     function startRace() {
       var timer = 60;
-
+      if(selectedGame.key === 3) {
+        bennyHillAudio.play();
+      } else {
       formulaOneAudio.play();
+      }
       startLed('green');
       var maxValue = selectedGame.redMaxScore > selectedGame.yellowMaxScore ? selectedGame.redMaxScore : selectedGame.yellowMaxScore;
       // scale 35-100
@@ -446,6 +450,8 @@ function reRenderChart(){
       startLed('red');
       formulaOneAudio.pause();
       formulaOneAudio.currentTime = 0;
+      bennyHillAudio.pause();
+      bennyHillAudio.currentTime = 0;
       stopCars();
    
       // Show winner
