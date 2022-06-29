@@ -391,7 +391,7 @@
 
           var scaledRedSpeed = redScore > 0 ? Math.min(Math.floor(redScore / maxValue * 65 ) + 35, 85) : redScore;
           var scaledYellowSpeed = yellowScore > 0 ? Math.min(Math.floor(yellowScore / maxValue * 65) + 35, 85) : yellowScore;
-          // startCarsAndSetSpeed(scaledRedSpeed, scaledYellowSpeed);
+          startCarsAndSetSpeed(scaledRedSpeed, scaledYellowSpeed);
           index++;
         }
         if(timer <= 0 ) {
