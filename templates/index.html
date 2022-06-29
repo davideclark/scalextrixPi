@@ -1,36 +1,286 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Null reference Exception</title>
-    <link rel="stylesheet" href="/static/css/style.css">
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <script src="{{url_for('static', filename='scripts.js')}}"></script>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Livestream v0.1-beta (DO NOT DEPLOY TO PRODUCTION)</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <script src="{{url_for('static', filename='scripts.js')}}"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            tempcover: {
+              primary: '#264694',
+              secondary: '#779E00'
+            },
+            sf: {
+              red: {
+                thin: '#b40f20',
+                main: '#dd1328'
+              },
+              yellow: {
+                thin: '#d0d006',
+                main: '#f7f700'
+              }
+            }
+          },
+        }
+      }
+    }
+  </script>
 </head>
+
 <body onload="init();">
-    <header>
-    </header>
-    <H1>Tempcover hackothon, null pointer exception in car controller!</H1>
-    <p>Try using the folowing http messages</p>
-    <p>Get /status</p>
-    <p>Get /stop?car={yellow|red}</p>
-    <p>Get /start?car={yellow|red}</p>
-    <p>Get speed?car={red|yellow}&speed={40-100}</p>
-    <button onclick="startCar('yellow')">Start Car Yellow</button>
-    <button  onclick="stopCar('yellow')">Stop Car Yellow</button>
-    <br>
-    <button onclick="startCar('red')">Start Car Red</button>
-    <button onclick="stopCar('red')">Stop Car Red</button>
-    <div class="slidecontainer">
-      <label>Yellow speed</label>
-      <input type="range" min="1" max="100" value="50" class="slider" id="yellowSpeed">
-      <label id='yellowSpeedLabel'> </label>
+  <!-- Header -->
+  <div class="bg-tempcover-primary py-8 flex justify-center">
+    <h1 class="text-3xl font-bold text-white">
+      Livestream v0.1-beta (DO NOT DEPLOY TO PRODUCTION)
+    </h1>
+  </div>
+
+  <!-- Content -->
+  <div class="px-20 mt-8">
+    <!-- Question selected -->
+    <h1
+      class="text-center text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-t from-sf-red-thin to-sf-yellow-thin"
+      id="question"></h1>
+    <!-- Roulette Wheel for question -->
+    <div id="ChartWrapper" class="flex justify-center w-full">
+      <div id="chart"></div>
     </div>
-    <div class="slidecontainer">
-      <label>Red speed</label>
-      <input type="range" min="1" max="100" value="50" class="slider" id="redSpeed">
-      <label id='redSpeedLabel'> </label>
+    <!-- Countdown and voting wrapper -->
+    <div id="MainWrapper" class="items-center hidden mt-4">
+      <!-- Countdown? -->
+      <div class="text-center">
+        <h3>Get your vote in! You only have: </h3>
+        <h2  class="font-extrabold text-8xl" id="CountdownTimer"></h2>
+      </div>
+      <!-- Voting wrapper -->
+      <div class="flex items-center justify-around mt-8">
+        <!-- Vote left -->
+        <div>
+          <button class="bg-sf-red-main text-4xl p-20 rounded hover:cursor-pointer hover:bg-sf-red-thin">First</button>
+        </div>
+        <!-- Vote right -->
+        <div>
+          <button class="bg-sf-yellow-main text-4xl p-20 rounded hover:cursor-pointer hover:bg-sf-yellow-thin">Mulsanne</button>
+        </div>
+      </div>
     </div>
+  </div>
+  </div>
+  <script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+  <script type="text/javascript" charset="utf-8">
+    var padding = { top: 20, right: 40, bottom: 0, left: 0 },
+      w = 500 - padding.left - padding.right,
+      h = 500 - padding.top - padding.bottom,
+      r = Math.min(w, h) / 2,
+      rotation = 0,
+      oldrotation = 0,
+      picked = 100000,
+      oldpick = [],
+      color = d3.scale.category20();//category20c()
+    //randomNumbers = getRandomNumbers();
+
+    //http://osric.com/bingo-card-generator/?title=HTML+and+CSS+BINGO!&words=padding%2Cfont-family%2Ccolor%2Cfont-weight%2Cfont-size%2Cbackground-color%2Cnesting%2Cbottom%2Csans-serif%2Cperiod%2Cpound+sign%2C%EF%B9%A4body%EF%B9%A5%2C%EF%B9%A4ul%EF%B9%A5%2C%EF%B9%A4h1%EF%B9%A5%2Cmargin%2C%3C++%3E%2C{+}%2C%EF%B9%A4p%EF%B9%A5%2C%EF%B9%A4!DOCTYPE+html%EF%B9%A5%2C%EF%B9%A4head%EF%B9%A5%2Ccolon%2C%EF%B9%A4style%EF%B9%A5%2C.html%2CHTML%2CCSS%2CJavaScript%2Cborder&freespace=true&freespaceValue=Web+Design+Master&freespaceRandom=false&width=5&height=5&number=35#results
+
+    var data = [
+      { "label": "Underwriter", "value": 1, "question": "Underwriter" }, // padding
+      { "label": "Judges", "value": 1, "question": "Judges" }, //font-family
+      { "label": "Scheme", "value": 1, "question": "Scheme" }, //font-family
+    ];
+
+
+    var svg = d3.select('#chart')
+      .append("svg")
+      .data([data])
+      .attr("width", w + padding.left + padding.right)
+      .attr("height", h + padding.top + padding.bottom);
+
+    var container = svg.append("g")
+      .attr("class", "chartholder")
+      .attr("transform", "translate(" + (w / 2 + padding.left) + "," + (h / 2 + padding.top) + ")");
+
+    var vis = container
+      .append("g");
+
+    var pie = d3.layout.pie().sort(null).value(function (d) { return 1; });
+
+    // declare an arc generator function
+    var arc = d3.svg.arc().outerRadius(r);
+
+    // select paths, use arc generator to draw
+    var arcs = vis.selectAll("g.slice")
+      .data(pie)
+      .enter()
+      .append("g")
+      .attr("class", "slice");
+
+
+    arcs.append("path")
+      .attr("fill", function (d, i) { return color(i); })
+      .attr("d", function (d) { return arc(d); });
+
+    // add the text
+    arcs.append("text").attr("transform", function (d) {
+      d.innerRadius = 0;
+      d.outerRadius = r;
+      d.angle = (d.startAngle + d.endAngle) / 2;
+      return "rotate(" + (d.angle * 180 / Math.PI - 90) + ")translate(" + (d.outerRadius - 10) + ")";
+    })
+      .attr("text-anchor", "end")
+      .text(function (d, i) {
+        return data[i].label;
+      });
+
+    container.on("click", spin);
+
+
+    function spin(d) {
+      // clear question
+      d3.select("#question")
+        .text('');
+      container.on("click", null);
+
+      //all slices have been seen, all done
+      console.log("OldPick: " + oldpick.length, "Data length: " + data.length);
+      if (oldpick.length == data.length) {
+        console.log("done");
+        container.on("click", null);
+        return;
+      }
+
+      var ps = 360 / data.length,
+        pieslice = Math.round(1440 / data.length),
+        rng = Math.floor((Math.random() * 1440) + 360);
+
+      rotation = (Math.round(rng / ps) * ps);
+
+      picked = Math.round(data.length - (rotation % 360) / ps);
+      picked = picked >= data.length ? (picked % data.length) : picked;
+
+
+      if (oldpick.indexOf(picked) !== -1) {
+        d3.select(this).call(spin);
+        return;
+      } else {
+        oldpick.push(picked);
+      }
+
+      rotation += 90 - Math.round(ps / 2);
+
+      vis.transition()
+        .duration(3000)
+        .attrTween("transform", rotTween)
+        .each("end", function () {
+
+          //populate question
+          d3.select("#question")
+            .text(`The category picked is: ${data[picked].question}`);
+
+          oldrotation = rotation;
+          container.on("click", spin);
+          handleSpinResult();
+        });
+
+    }
+
+    function handleSpinResult() {
+        setCountdown();
+        var chartWrapper = document.getElementById('ChartWrapper');
+        chartWrapper.style.display = 'none';
+        var mainWrapper = document.getElementById('MainWrapper');
+        mainWrapper.style.display = 'block';
+    }
+    
+    //make arrow
+    svg.append("g")
+      .attr("transform", "translate(" + (w + padding.left + padding.right) + "," + ((h / 2) + padding.top) + ")")
+      .append("path")
+      .attr("d", "M-" + (r * .15) + ",0L0," + (r * .05) + "L0,-" + (r * .05) + "Z")
+      .style({ "fill": "black" });
+
+    //draw spin circle
+    container.append("circle")
+      .attr("cx", 0)
+      .attr("cy", 0)
+      .attr("r", 60)
+      .style({ "fill": "white", "cursor": "pointer" });
+
+    //spin text
+    container.append("text")
+      .attr("x", 0)
+      .attr("y", 15)
+      .attr("text-anchor", "middle")
+      .text("SPIN")
+      .style({ "font-weight": "bold", "font-size": "30px" });
+
+
+    function rotTween(to) {
+      var i = d3.interpolate(oldrotation % 360, rotation);
+      return function (t) {
+        return "rotate(" + i(t) + ")";
+      };
+    }
+
+
+    function getRandomNumbers() {
+      var array = new Uint16Array(1000);
+      var scale = d3.scale.linear().range([360, 1440]).domain([0, 100000]);
+
+      if (window.hasOwnProperty("crypto") && typeof window.crypto.getRandomValues === "function") {
+        window.crypto.getRandomValues(array);
+        console.log("works");
+      } else {
+        //no support for crypto, get crappy random numbers
+        for (var i = 0; i < 1000; i++) {
+          array[i] = Math.floor(Math.random() * 100000) + 1;
+        }
+      }
+
+      return array;
+    }
+
+    function setCountdown() {
+      // Set the date we're counting down to
+      var dateNow = new Date();
+      var dateToCountdown = new Date(dateNow.setHours(dateNow.getHours() + 1));
+      console.log("🚀 ~ file: index.html ~ line 245 ~ setCountdown ~ dateToCountdown", dateToCountdown)
+      var countDownDate = dateToCountdown.getTime();
+
+      // Update the count down every 1 second
+      var x = setInterval(function () {
+
+        // Get today's date and time
+        var now = new Date().getTime();
+
+        // Find the distance between now and the count down date
+        var distance = countDownDate - now;
+
+        // Time calculations for days, hours, minutes and seconds
+        var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+        // Display the result in the element with id="demo"
+        document.getElementById("CountdownTimer").innerHTML = minutes + "m " + seconds + "s ";
+
+        // If the count down is finished, write some text
+        if (distance < 0) {
+          clearInterval(x);
+          document.getElementById("demo").innerHTML = "EXPIRED";
+        }
+      }, 1000);
+    }
+
+  </script>
 </body>
+
 </html>
